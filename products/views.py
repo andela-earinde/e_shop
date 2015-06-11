@@ -1,25 +1,45 @@
 from products.models import (Product, Category,
-    Order, Customer)
-from products.serializer import ProductSerializer
+    Order, Customer, Supplier)
+from products.serializer import (ProductSerializer, CategorySerializer, 
+    SupplierSerializer, OrderSerializer, CustomerSerializer)
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import viewsets
 
-class Products(APIView):
+class ProductView(viewsets.ModelViewSet):
     """
-    List all Products or create a new one
+    A viewset for viewing and editing products instances.
     """
     serializer_class = ProductSerializer
-    def get(self, request, format=None):
-        products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+    queryset = Product.objects.all()
 
-    def post(self, request, format=None):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class CategoryView(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing categories instances.
+    """
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+class SupplierView(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing supplies instances.
+    """
+    serializer_class = SupplierSerializer
+    queryset = Supplier.objects.all()
+
+class OrderView(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing supplies instances.
+    """
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all()
+
+class CustomerView(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing supplies instances.
+    """
+    serializer_class = CustomerSerializer
+    queryset = Customer.objects.all()
 
