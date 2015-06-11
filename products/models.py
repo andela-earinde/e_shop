@@ -15,7 +15,7 @@ class Supplier(models.Model):
 
     def __unicode__(self):
         return self.supplier_name
-        
+
 
 class Customer(models.Model):
     """
@@ -42,7 +42,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=50)
     category_description = models.TextField(default="No Description")
     category_image = models.URLField(help_text='The link to the service where the category' 
-        'image is stored')
+        ' image is stored')
 
     def __unicode__(self):
         return self.category_name
@@ -57,10 +57,10 @@ class Product(models.Model):
     product_size = models.CharField(max_length=50)
     supplier = models.ForeignKey(Supplier)
     category = models.ForeignKey(Category)
-    price = models.DecimalField(max_digits=10, decimal_places=10)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     product_color = models.CharField(max_length=50)
     product_image = models.URLField(help_text='The link to the service where the product' 
-        'image is stored')
+        ' image is stored')
     product_quantity = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True, help_text='The day the product was added')
     date_updated = models.DateTimeField(auto_now=True, help_text='The day the product was updated')
@@ -75,8 +75,8 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer)
     product = models.ManyToManyField(Product)
     qunatity_ordered = models.IntegerField(default=0)
-    total_cost = models.DecimalField(max_digits=10, decimal_places=10, help_text='The total cost of'
-        'products ordered')
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, help_text='The total cost of'
+        ' products ordered')
     date_order = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
