@@ -62,6 +62,7 @@ class Product(models.Model):
     product_image = models.URLField(help_text='The link to the service where the product' 
         ' image is stored')
     product_quantity = models.IntegerField(default=0)
+    is_available = models.BooleanField(default=True)
     date_added = models.DateTimeField(auto_now_add=True, help_text='The day the product was added')
     date_updated = models.DateTimeField(auto_now=True, help_text='The day the product was updated')
 

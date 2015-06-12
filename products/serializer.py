@@ -18,6 +18,6 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Order
 
-class CustomerSerializer(serializers.HyperlinkedModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
