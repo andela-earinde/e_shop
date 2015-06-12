@@ -108,7 +108,7 @@ class CategoryTestCase(APITestCase):
 
     def setUp(self):
         self.product_category = Category.objects.create(category_name="headsets", 
-            category_description="very cool headsets", category_image="http:/amazon.com/beats.jpg")
+            category_description="very cool headsets", category_image="http://amazon.com/beats.jpg")
 
 
     #test cases for GET /categries/
@@ -116,7 +116,7 @@ class CategoryTestCase(APITestCase):
         response = self.client.get('/categories/')
 
         data = [{"id": 1, "category_name": "headsets", "category_description": "very cool headsets",
-            "category_image": "http:/amazon.com/beats.jpg"}]
+            "category_image": "http://amazon.com/beats.jpg"}]
 
         self.assertEqual(len(response.data), 1)   
         self.assertEqual(response.data, data)
@@ -139,3 +139,56 @@ class CategoryTestCase(APITestCase):
 
         self.assertEqual(response.data, data)
 
+    #test cases for PUT /categories/{pk}
+    def test_a_category_updated_when_put_request_is_made_with_the_pk(self):
+        response = self.client.put("/categories/1/",{"category_name": "headphones", 
+            "category_description": "very cool headphones","category_image": "http://amazon.com/beats.jpg"})
+
+        data = {"id": 1, "category_name": "headphones", "category_description": "very cool headphones",
+            "category_image": "http://amazon.com/beats.jpg"}
+
+        self.assertEqual(response.data, data)
+
+class OrderTestCase(APITestCase):
+    ord_customers = ""
+    ord_products = ""
+    product_category = ""
+    product_supplier = ""
+    def setUp(self):
+        self.product_category = Category.objects.create(category_name="headsets", 
+            category_description="very cool headsets", category_image="http:/amazon.com/beats.jpg")
+
+        self.product_supplier = Supplier.objects.create(supplier_name="Apple", email="apple@apple.com", 
+            description="cool company", phone="323232323", address="likin park", city="new brew", 
+            state="old brew", country="USA")
+        self.ord_products = Product.objects.create(product_name="beats by dre",product_desription="cool headset",
+            product_size="2l", category=self.product_category, price=200.00, product_color="red",
+            product_image="http://amazon.com/beats_dre.jpg", product_quantity=20,
+            supplier=self.product_supplier, is_available=True)
+        self.ord_customers = Customer.objects.create(first_name="eniola", last_name="arinde",
+            email="eniola@yahoo.com", phone="121212", address="new city", city="compton",
+            state="new cost", country="south brigde")
+
+        orders = Order(customer=self.ord_customers, qunatity_ordered=2, total_cost=400.00)
+        orders.save()
+        orders.product.add(self.ord_products)
+
+
+    #test cases for GET /orders/
+    def test_retrieves_all_orders_when_a_get_request_is_made(self):
+        response = self.client.get('/orders/')
+
+        data = dict(response.data[0])
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'customer':'http://testserver/customers/1/', 
+            'product': ['http://testserver/products/1/'], 'qunatity_ordered': 2}, data)
+
+    #test cases for POST /orders/
+    def test_add_a_new_order_when_a_post_request_is_made(self):
+        response = self.client.post('/orders/', {'customer': 'http://testserver/customers/1/', 
+            'product': ['http://testserver/products/1/'], 'qunatity_ordered': 4, 'total_cost': 800.00})
+
+        self.assertDictContainsSubset({'customer': 'http://testserver/customers/1/', 
+            'product': ['http://testserver/products/1/'], 'qunatity_ordered': 4, 'total_cost': '800.00'},
+            response.data)
